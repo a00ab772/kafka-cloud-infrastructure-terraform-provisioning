@@ -1,7 +1,13 @@
 variable "cloud_provider" {
   type        = string
   default     = "aws"
-  description = "Elige la plataforma de destino: aws, gcp o confluent"
+  description = "Elige la plataforma de destino: aws, gcp, eks o confluent"
+}
+
+variable "cluster_name" {
+  type        = string
+  default     = "kafka-cluster"
+  description = "Nombre para los clústeres de Kubernetes (GKE o EKS)"
 }
 
 variable "aws_region" {

@@ -15,6 +15,7 @@ on:
         options:
           - aws
           - gcp
+          - eks
           - confluent
 
 jobs:

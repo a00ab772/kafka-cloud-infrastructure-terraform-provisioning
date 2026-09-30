@@ -57,4 +57,4 @@ También puedes realizar los despliegues de manera visual mediante la interfaz d
 
 
 
-![img.png](images/githubactions.png)
+![GITHUB ACTIONS](images/githubactions.png)
