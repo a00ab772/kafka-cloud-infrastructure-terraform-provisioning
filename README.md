@@ -55,6 +55,13 @@ $ terraform apply -var="cloud_provider=confluent"
 
 También puedes realizar los despliegues de manera visual mediante la interfaz de GitHub Actions utilizando el menú desplegable interactivo (workflow_dispatch), seleccionando el proveedor deseado:
 
-
-
 ![GITHUB ACTIONS](images/githubactions.png)
+
+Para asegurarnos de que los workflow funcionan vamos a usar act (nektos/act). 
+
+Este comando ejecutará los workflows en contenedores Docker locales, simulando lo que haría el runner de GitHub.
+
+Se validar la sintáxis de la github workflow ejecutando act en modo dry run:
+
+![act dry run](images/act_dry_run.png)
+
