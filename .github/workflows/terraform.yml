@@ -1,0 +1,54 @@
+name: "Multi-Cloud Terraform CI/CD"
+
+on:
+  push:
+    branches:
+      - main
+  # Permite elegir manualmente el proveedor de nube desde la interfaz de GitHub
+  workflow_dispatch:
+    inputs:
+      cloud_provider:
+        description: "Elige el proveedor de nube a desplegar"
+        required: true
+        default: "aws"
+        type: choice
+        options:
+          - aws
+          - gcp
+          - confluent
+
+jobs:
+  terraform-deploy:
+    name: "Deploy to ${{ github.event.inputs.cloud_provider || 'aws' }}"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v3
+
+      - name: Configurar Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan -var="cloud_provider=${{ github.event.inputs.cloud_provider || 'aws' }}"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+          TF_VAR_confluent_cloud_api_key: ${{ secrets.CONFLUENT_CLOUD_API_KEY }}
+          TF_VAR_confluent_cloud_api_secret: ${{ secrets.CONFLUENT_CLOUD_API_SECRET }}
+
+      - name: Terraform Apply
+        if: github.event_name == 'workflow_dispatch'
+        run: terraform apply -auto-approve -var="cloud_provider=${{ github.event.inputs.cloud_provider || 'aws' }}"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+          TF_VAR_confluent_cloud_api_key: ${{ secrets.CONFLUENT_CLOUD_API_KEY }}
+          TF_VAR_confluent_cloud_api_secret: ${{ secrets.CONFLUENT_CLOUD_API_SECRET }}
